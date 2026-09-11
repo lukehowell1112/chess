@@ -1,6 +1,10 @@
 package chess;
 
 /**
+ * THIS IS A TEST
+ */
+
+/**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
  * Note: You can add to this class, but you may not alter
