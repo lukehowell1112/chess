@@ -31,4 +31,12 @@ public class ChessPosition {
     public int getColumn() {
         return col;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ChessPosition other)) {
+            return false;
+        }
+        return this.row == other.row && this.col == other.col;
+    }
 }
