@@ -1,8 +1,5 @@
 package chess;
 
-/**
- * THIS IS A TEST
- */
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
