@@ -55,4 +55,12 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         throw new RuntimeException("Not implemented");
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ChessPiece other)) {
+            return false;
+        }
+        return this.pieceColor.equals(other.pieceColor) && this.type.equals(other.type);
+    }
 }
