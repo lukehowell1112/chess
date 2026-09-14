@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -54,7 +55,58 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+
+        Collection<ChessMove> moves = new ArrayList<>();
+
+        switch (type) {
+            case PAWN:
+                // pawn logic
+                break;
+            case ROOK:
+                // rook logic
+                break;
+            case KNIGHT:
+                // knight logic
+                break;
+            case KING:
+
+                int[][] kingOffsets = {
+                        {1, 0},   // up
+                        {-1, 0},  // down
+                        {0, -1},  // left
+                        {0, 1},   // right
+                        {1, 1},   // upright
+                        {1, -1},  // upleft
+                        {-1, 1},  // downright
+                        {-1, -1}  // downleft
+                };
+
+                for (int i = 0; i < 8; i++) {
+                    int rowOffset = kingOffsets[i][0];
+                    int colOffset = kingOffsets[i][1];
+                    int newRow = row + rowOffset;
+                    int newCol = col + colOffset;
+
+                    if (newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) {
+                        continue;
+                    }
+
+                    ChessPosition newPosition = new ChessPosition(newRow, newCol);
+
+                    ChessMove move = new ChessMove(myPosition, newPosition, null);
+                }
+
+                break;
+            case QUEEN:
+                // queen logic
+                break;
+            case BISHOP:
+                // bishop logic
+                break;
+        }
     }
 
     @Override
