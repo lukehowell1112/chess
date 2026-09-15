@@ -66,7 +66,41 @@ public class ChessPiece {
                 // pawn logic
                 break;
             case ROOK:
-                // rook logic
+                int[][] rookOffsets = {
+                        {1, 0},   // up
+                        {-1, 0},  // down
+                        {0, -1},  // left
+                        {0, 1}    // right
+                };
+
+                for (int i = 0; i < 4; i++) {
+                    int rowOffset = rookOffsets[i][0];
+                    int colOffset = rookOffsets[i][1];
+
+                    int newRow = row + rowOffset;
+                    int newCol = col + colOffset;
+
+                    while (!(newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8)) {
+                        // check board bounds, friendly/enemy piece, add move, then
+                        // update newRow/newCol to take another step in the same direction
+                        ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                        ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
+
+                        if (pieceAtNewPosition != null && pieceAtNewPosition.getTeamColor().equals(this.pieceColor)) {
+                            break; // check if newPos has a piece and is ours
+                        }
+                        else if (pieceAtNewPosition != null && !(pieceAtNewPosition.getTeamColor().equals(this.pieceColor))) {
+                            ChessMove move = new ChessMove(myPosition, newPosition, null);
+                            moves.add(move);
+                            break; // check if the piece is an enemy piece, capture the square
+                        } else {
+                            ChessMove move = new ChessMove(myPosition, newPosition, null);
+                            moves.add(move);
+                            newRow += rowOffset;
+                            newCol += colOffset;
+                        } // open square, move, prepare for next iteration
+                    }
+                }
                 break;
             case KNIGHT:
 
