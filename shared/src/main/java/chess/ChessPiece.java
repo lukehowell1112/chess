@@ -69,7 +69,39 @@ public class ChessPiece {
                 // rook logic
                 break;
             case KNIGHT:
-                // knight logic
+
+                int[][] knightOffsets = {
+                        {2, 1}, //up-right
+                        {2, -1}, //up-left
+                        {1, 2}, //right-up
+                        {-1, 2}, //right-down
+                        {-2, 1}, //down-right
+                        {-2, -1}, //down-left
+                        {1, -2}, //left-up
+                        {-1, -2} //left-down
+                };
+
+                for (int i = 0; i < 8; i++) {
+                    int rowOffset = knightOffsets[i][0];
+                    int colOffset = knightOffsets[i][1];
+                    int newRow = row + rowOffset;
+                    int newCol = col + colOffset;
+
+                    if (newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) {
+                        continue; // check if new pos is on the board
+                    }
+
+                    ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                    ChessPiece pieceAtNewPosition = board.getPiece(newPosition); // get the square of the newPos on the board
+
+                    if (pieceAtNewPosition != null && pieceAtNewPosition.getTeamColor().equals(this.pieceColor)) {
+                        continue; // check if newPos has a piece and is ours
+                    }
+
+                    ChessMove move = new ChessMove(myPosition, newPosition, null);
+                    moves.add(move); // all checks pass, add it to a possible move
+                }
+
                 break;
             case KING:
 
