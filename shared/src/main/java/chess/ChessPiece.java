@@ -91,15 +91,20 @@ public class ChessPiece {
                     int newCol = col + colOffset;
 
                     if (newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) {
-                        continue;
+                        continue; // check if new pos is on the board
                     }
 
                     ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                    ChessPiece pieceAtNewPosition = board.getPiece(newPosition); // get the square of the newPos on the board
+
+                    if (pieceAtNewPosition != null && pieceAtNewPosition.getTeamColor().equals(this.pieceColor)) {
+                        continue; // check if newPos has a piece and is ours
+                    }
 
                     ChessMove move = new ChessMove(myPosition, newPosition, null);
-                    moves.add(move);
+                    moves.add(move); // all checks pass, add it to a possible move
                 }
-
+                
                 break;
             case QUEEN:
                 // queen logic
