@@ -113,6 +113,8 @@ public class ChessPiece {
                 // bishop logic
                 break;
         }
+
+        return moves;
     }
 
     @Override
