@@ -97,6 +97,7 @@ public class ChessPiece {
                     ChessPosition newPosition = new ChessPosition(newRow, newCol);
 
                     ChessMove move = new ChessMove(myPosition, newPosition, null);
+                    moves.add(move);
                 }
 
                 break;
