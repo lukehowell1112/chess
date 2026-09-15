@@ -175,8 +175,40 @@ public class ChessPiece {
             case QUEEN:
                 // queen logic
                 break;
-            case BISHOP:
-                // bishop logic
+            case BISHOP: // should be the same as rook, just diagonal
+                int[][] bishopOffsets = {
+                        {1, 1},   // up-right
+                        {-1, -1},  // down-left
+                        {1, -1},  // up-left
+                        {-1, 1}    // down-right
+                };
+
+                for (int i = 0; i < 4; i++) {
+                    int rowOffset = bishopOffsets[i][0];
+                    int colOffset = bishopOffsets[i][1];
+
+                    int newRow = row + rowOffset;
+                    int newCol = col + colOffset;
+
+                    while (!(newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8)) {
+                        ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                        ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
+
+                        if (pieceAtNewPosition != null && pieceAtNewPosition.getTeamColor().equals(this.pieceColor)) {
+                            break;
+                        }
+                        else if (pieceAtNewPosition != null && !(pieceAtNewPosition.getTeamColor().equals(this.pieceColor))) {
+                            ChessMove move = new ChessMove(myPosition, newPosition, null);
+                            moves.add(move);
+                            break;
+                        } else {
+                            ChessMove move = new ChessMove(myPosition, newPosition, null);
+                            moves.add(move);
+                            newRow += rowOffset;
+                            newCol += colOffset;
+                        }
+                    }
+                }
                 break;
         }
 
