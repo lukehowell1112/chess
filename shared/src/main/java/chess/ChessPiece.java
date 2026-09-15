@@ -172,9 +172,47 @@ public class ChessPiece {
                 }
                 
                 break;
-            case QUEEN:
-                // queen logic
+            case QUEEN: //merge rook and bishop logic
+
+                int[][] queenOffsets = {
+                        {1, 0},   // up
+                        {-1, 0},  // down
+                        {0, -1},  // left
+                        {0, 1},   // right
+                        {1, 1},   // up-right
+                        {-1, -1},  // down-left
+                        {1, -1},  // up-left
+                        {-1, 1}    // down-right
+                };
+
+                for (int i = 0; i < 8; i++) {
+                    int rowOffset = queenOffsets[i][0];
+                    int colOffset = queenOffsets[i][1];
+
+                    int newRow = row + rowOffset;
+                    int newCol = col + colOffset;
+
+                    while (!(newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8)) {
+                        ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                        ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
+
+                        if (pieceAtNewPosition != null && pieceAtNewPosition.getTeamColor().equals(this.pieceColor)) {
+                            break;
+                        }
+                        else if (pieceAtNewPosition != null && !(pieceAtNewPosition.getTeamColor().equals(this.pieceColor))) {
+                            ChessMove move = new ChessMove(myPosition, newPosition, null);
+                            moves.add(move);
+                            break;
+                        } else {
+                            ChessMove move = new ChessMove(myPosition, newPosition, null);
+                            moves.add(move);
+                            newRow += rowOffset;
+                            newCol += colOffset;
+                        }
+                    }
+                }
                 break;
+
             case BISHOP: // should be the same as rook, just diagonal
                 int[][] bishopOffsets = {
                         {1, 1},   // up-right
