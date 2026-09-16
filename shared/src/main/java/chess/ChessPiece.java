@@ -74,20 +74,38 @@ public class ChessPiece {
                 int newRow = row + direction;
                 int newCol = col;
 
-                if (newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) {
-                    break;
+                if (!(newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8)) {
+                    ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                    ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
+
+                    if (pieceAtNewPosition == null) {
+                        ChessMove move = new ChessMove(myPosition, newPosition, null);
+                        moves.add(move);
+                    }
                 }
 
-                ChessPosition newPosition = new ChessPosition(newRow, newCol);
-                ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
+                ChessPosition forwardLeft = new ChessPosition(newRow, col - 1);
+                ChessPosition forwardRight = new ChessPosition(newRow, col + 1);
 
-                if (pieceAtNewPosition != null) {
-                    break;
+                if (!(forwardLeft.getRow() < 1 || forwardLeft.getRow() > 8 || forwardLeft.getColumn() < 1 || forwardLeft.getColumn() > 8)) {
+
+                    ChessPiece pieceAtForwardLeft = board.getPiece(forwardLeft);
+
+                    if (pieceAtForwardLeft != null && !(pieceAtForwardLeft.getTeamColor().equals(this.pieceColor))) {
+                        ChessMove move = new ChessMove(myPosition, forwardLeft, null);
+                        moves.add(move);
+                    }
                 }
 
-                ChessMove move = new ChessMove(myPosition, newPosition, null);
-                moves.add(move);
+                if (!(forwardRight.getRow() < 1 || forwardRight.getRow() > 8 || forwardRight.getColumn() < 1 || forwardRight.getColumn() > 8)) {
 
+                    ChessPiece pieceAtForwardRight = board.getPiece(forwardRight);
+
+                    if (pieceAtForwardRight != null && !(pieceAtForwardRight.getTeamColor().equals(this.pieceColor))) {
+                        ChessMove move = new ChessMove(myPosition, forwardRight, null);
+                        moves.add(move);
+                    }
+                }
 
                 break;
 
