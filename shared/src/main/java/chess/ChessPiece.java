@@ -47,6 +47,8 @@ public class ChessPiece {
         return type;
     }
 
+    
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -64,6 +66,7 @@ public class ChessPiece {
         switch (type) {
             case PAWN:
 
+                // move forward logic
                 int direction;
                 if (this.pieceColor.equals(ChessGame.TeamColor.WHITE)) {
                     direction = 1;
@@ -75,15 +78,19 @@ public class ChessPiece {
                 int newCol = col;
 
                 if (!(newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8)) {
-                    ChessPosition newPosition = new ChessPosition(newRow, newCol);
-                    ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
+                    if (this.pieceColor.equals(ChessGame.TeamColor.WHITE) && newRow != 8
+                            || this.pieceColor.equals(ChessGame.TeamColor.BLACK) && newRow != 1) {
+                        ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                        ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
 
-                    if (pieceAtNewPosition == null) {
-                        ChessMove move = new ChessMove(myPosition, newPosition, null);
-                        moves.add(move);
+                        if (pieceAtNewPosition == null) {
+                            ChessMove move = new ChessMove(myPosition, newPosition, null);
+                            moves.add(move);
+                        }
                     }
                 }
 
+                // diagonal capture logic
                 ChessPosition forwardLeft = new ChessPosition(newRow, col - 1);
                 ChessPosition forwardRight = new ChessPosition(newRow, col + 1);
 
@@ -107,6 +114,45 @@ public class ChessPiece {
                     }
                 }
 
+                // initial double move logic
+                if (this.pieceColor.equals(ChessGame.TeamColor.WHITE) && row == 2
+                        || this.pieceColor.equals(ChessGame.TeamColor.BLACK) && row == 7) {
+
+                    int newRowPlusTwo = row + (direction * 2);
+                    ChessPosition twoForward = new ChessPosition(newRowPlusTwo, col);
+                    ChessPiece pieceAtTwoForward = board.getPiece(twoForward);
+
+                    ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                    ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
+
+                    if (pieceAtNewPosition == null && pieceAtTwoForward == null) {
+                        ChessMove move = new ChessMove(myPosition, twoForward, null);
+                        moves.add(move);
+                    }
+                }
+
+                // promotion logic
+                if (this.pieceColor.equals(ChessGame.TeamColor.WHITE) && newRow == 8
+                        || this.pieceColor.equals(ChessGame.TeamColor.BLACK) && newRow == 1) {
+
+                    ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                    ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
+
+                    if (pieceAtNewPosition == null) {
+                        ChessMove moveQ = new ChessMove(myPosition, newPosition, PieceType.QUEEN);
+                        moves.add(moveQ);
+
+                        ChessMove moveR = new ChessMove(myPosition, newPosition, PieceType.ROOK);
+                        moves.add(moveR);
+
+                        ChessMove moveB = new ChessMove(myPosition, newPosition, PieceType.BISHOP);
+                        moves.add(moveB);
+
+                        ChessMove moveK = new ChessMove(myPosition, newPosition, PieceType.KNIGHT);
+                        moves.add(moveK);
+
+                    }
+                }
                 break;
 
             case ROOK:
