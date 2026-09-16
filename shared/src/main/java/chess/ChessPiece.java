@@ -63,8 +63,34 @@ public class ChessPiece {
 
         switch (type) {
             case PAWN:
-                // pawn logic
+
+                int direction;
+                if (this.pieceColor.equals(ChessGame.TeamColor.WHITE)) {
+                    direction = 1;
+                } else {
+                    direction = -1;
+                }
+
+                int newRow = row + direction;
+                int newCol = col;
+
+                if (newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) {
+                    break;
+                }
+
+                ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
+
+                if (pieceAtNewPosition != null) {
+                    break;
+                }
+
+                ChessMove move = new ChessMove(myPosition, newPosition, null);
+                moves.add(move);
+
+
                 break;
+
             case ROOK:
                 int[][] rookOffsets = {
                         {1, 0},   // up
