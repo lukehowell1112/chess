@@ -73,6 +73,18 @@ public class ChessBoard {
 
     }
 
+    public ChessBoard(ChessBoard other) {
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = other.getPiece(position);
+                if (piece != null) {
+                    this.addPiece(position, piece);
+                }
+            }
+        }
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof ChessBoard other)) {
