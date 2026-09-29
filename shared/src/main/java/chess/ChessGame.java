@@ -40,6 +40,19 @@ public class ChessGame {
         BLACK
     }
 
+    private ChessPosition findKing(ChessGame.TeamColor teamColor, ChessBoard board) {
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+                if (piece != null && piece.getTeamColor() == teamColor && piece.getPieceType() == ChessPiece.PieceType.KING) {
+                    return position;
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Gets all valid moves for a piece at the given location
      *
@@ -49,10 +62,25 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
 
-        ChessPiece piece = ChessBoard.getPiece(position);
+        ChessPiece piece = board.getPiece(startPosition);
 
-        if (piece == null) {return null;}
+        if (piece == null) {
+            return null;
+        }
+        Collection<ChessMove> possibleMoves = piece.pieceMoves(board, startPosition);
 
+        for (ChessMove move : possibleMoves) {
+            ChessBoard boardCopy = new ChessBoard(board); // copy the board
+            ChessPiece movingPiece = boardCopy.getPiece(move.getStartPosition()); // get the piece
+
+            if (move.getPromotionPiece() == null) {
+                boardCopy.addPiece(move.getEndPosition(), movingPiece); // move the piece to the new position
+            } else {
+                boardCopy.addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
+            }
+
+            boardCopy.addPiece(move.getStartPosition(), null); // delete the old piece
+        }
     }
 
     /**
