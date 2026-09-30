@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -102,6 +103,7 @@ public class ChessGame {
             return null;
         }
         Collection<ChessMove> possibleMoves = piece.pieceMoves(board, startPosition);
+        Collection<ChessMove> realMoves = new ArrayList<>();
 
         for (ChessMove move : possibleMoves) {
             ChessBoard boardCopy = new ChessBoard(board); // copy the board
@@ -114,7 +116,12 @@ public class ChessGame {
             }
 
             boardCopy.addPiece(move.getStartPosition(), null); // delete the old piece
+
+            if (!(kingInCheck(piece.getTeamColor(), boardCopy))) {
+                realMoves.add(move);
+            }
         }
+        return realMoves;
     }
 
     /**
