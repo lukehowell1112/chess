@@ -40,6 +40,13 @@ public class ChessGame {
         BLACK
     }
 
+    /**
+     * reads over the entire board to find the king position
+     *
+     * @param teamColor
+     * @param board
+     * @return
+     */
     private ChessPosition findKing(ChessGame.TeamColor teamColor, ChessBoard board) {
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
@@ -51,6 +58,33 @@ public class ChessGame {
             }
         }
         return null;
+    }
+
+    /**
+     * checks each enemy piece to see if its moves will capture the king
+     *
+     * @param teamColor
+     * @param board
+     * @return
+     */
+    private boolean kingInCheck(ChessGame.TeamColor teamColor, ChessBoard board) {
+        ChessPosition kingPosition = findKing(teamColor, board);
+
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+                if (piece != null && piece.getTeamColor() != teamColor) {
+                    Collection<ChessMove> possibleMoves = piece.pieceMoves(board, position);
+                    for (ChessMove move : possibleMoves) {
+                        if (move.getEndPosition().equals(kingPosition)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
