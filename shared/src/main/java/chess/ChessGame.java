@@ -196,14 +196,14 @@ public class ChessGame {
 
                 if (piece != null && piece.getTeamColor() == teamColor) {
                     Collection<ChessMove> moves = validMoves(position);
-                    if (moves.isEmpty()) {
-                        return true;
+                    if (!(moves.isEmpty())) {
+                        return false;
                     }
                 }
 
             }
         }
-        return false;
+        return true;
     }
 
     /**
