@@ -14,8 +14,8 @@ public class ClearService {
     }
 
     public void clear() throws DataAccessException {
-        userDAO.clear();
         authDAO.clear();
         gameDAO.clear();
+        userDAO.clear();
     }
 }
