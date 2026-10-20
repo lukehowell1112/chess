@@ -1,15 +1,24 @@
 package server;
 
+import dataaccess.*;
 import io.javalin.*;
+import service.ClearService;
 
 public class Server {
+    private final UserDAO userDAO = new MemoryUserDAO();
+    private final AuthDAO authDAO = new MemoryAuthDAO();
+    private final GameDAO gameDAO = new MemoryGameDAO();
+    private final ClearService clearService = new ClearService(userDAO, authDAO, gameDAO);
 
     private final Javalin javalin;
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
-        // Register your endpoints and exception handlers here.
+        javalin.delete("/db", ctx -> {
+            clearService.clear();
+            ctx.result("{}");
+        });
 
     }
 
