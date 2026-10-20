@@ -3,10 +3,10 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.*;
 import io.javalin.*;
-import service.ClearService;
-import service.RegisterRequest;
-import service.RegisterResult;
-import service.UserService;
+import service.*;
+
+import io.javalin.http.Context;
+import java.util.Map;
 
 public class Server {
     private final UserDAO userDAO = new MemoryUserDAO();
@@ -32,6 +32,10 @@ public class Server {
             ctx.result("{}");
         });
 
+        javalin.exception(BadRequestException.class, (e, ctx) -> sendError(ctx, 400, e));
+        javalin.exception(UnauthorizedException.class, (e, ctx) -> sendError(ctx, 401, e));
+        javalin.exception(AlreadyTakenException.class, (e, ctx) -> sendError(ctx, 403, e));
+        javalin.exception(DataAccessException.class, (e, ctx) -> sendError(ctx, 500, e));
     }
 
     public int run(int desiredPort) {
@@ -41,5 +45,11 @@ public class Server {
 
     public void stop() {
         javalin.stop();
+    }
+
+    private void sendError(Context ctx, int status, Exception e) {
+        ctx.status(status);
+        ctx.result(new Gson().toJson(Map.of("message", e.getMessage())));
+
     }
 }
