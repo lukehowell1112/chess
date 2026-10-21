@@ -21,6 +21,12 @@ public class Server {
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
+        javalin.delete("/session", ctx -> {
+            String authToken = ctx.header("authorization");
+            userService.logout(authToken);
+            ctx.result("{}");
+        });
+
         javalin.post("/session", ctx -> {
             LoginRequest request = new Gson().fromJson(ctx.body(), LoginRequest.class);
             LoginResult result = userService.login(request);
