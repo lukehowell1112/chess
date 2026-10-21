@@ -33,10 +33,11 @@ public class UserService {
     }
 
     public LoginResult login(LoginRequest request) throws BadRequestException, DataAccessException, UnauthorizedException {
-        UserData user = userDAO.getUser(request.username());
+
         if (request.username() == null || request.password() == null) {
             throw new BadRequestException("Error: bad request");
         }
+        UserData user = userDAO.getUser(request.username());
 
         if (user == null) {
             throw new UnauthorizedException("Error: unauthorized");
@@ -50,5 +51,13 @@ public class UserService {
         authDAO.createAuth(new AuthData(authToken, request.username()));
 
         return new LoginResult(request.username(), authToken);
+    }
+
+    public void logout(String authToken) throws DataAccessException, UnauthorizedException {
+        if (authDAO.getAuth(authToken) == null) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+
+        authDAO.deleteAuth(authToken);
     }
 }
