@@ -21,6 +21,12 @@ public class Server {
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
+        javalin.post("/session", ctx -> {
+            LoginRequest request = new Gson().fromJson(ctx.body(), LoginRequest.class);
+            LoginResult result = userService.login(request);
+            ctx.result(new Gson().toJson(result));
+        });
+
         javalin.post("/user", ctx -> {
             RegisterRequest request = new Gson().fromJson(ctx.body(), RegisterRequest.class);
             RegisterResult result = userService.register(request);
