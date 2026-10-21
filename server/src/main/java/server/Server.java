@@ -15,11 +15,19 @@ public class Server {
 
     private final ClearService clearService = new ClearService(userDAO, authDAO, gameDAO);
     private final UserService userService = new UserService(userDAO, authDAO);
+    private final GameService gameService = new GameService(gameDAO, authDAO);
 
     private final Javalin javalin;
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
+
+        javalin.post("/game", ctx -> {
+            String authToken = ctx.header("authorization");
+            CreateGameRequest request = new Gson().fromJson(ctx.body(), CreateGameRequest.class);
+            CreateGameResult result = gameService.createGame(authToken, request);
+            ctx.result(new Gson().toJson(result));
+        });
 
         javalin.delete("/session", ctx -> {
             String authToken = ctx.header("authorization");
