@@ -50,6 +50,5 @@ public class Server {
     private void sendError(Context ctx, int status, Exception e) {
         ctx.status(status);
         ctx.result(new Gson().toJson(Map.of("message", e.getMessage())));
-
     }
 }
