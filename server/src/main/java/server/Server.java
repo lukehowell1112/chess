@@ -22,6 +22,12 @@ public class Server {
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
+        javalin.get("/game", ctx -> {
+            String authToken = ctx.header("authorization");
+            ListGamesResult result = gameService.listGames(authToken);
+            ctx.result(new Gson().toJson(result));
+        });
+
         javalin.post("/game", ctx -> {
             String authToken = ctx.header("authorization");
             CreateGameRequest request = new Gson().fromJson(ctx.body(), CreateGameRequest.class);

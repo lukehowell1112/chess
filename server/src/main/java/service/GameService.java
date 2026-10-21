@@ -5,6 +5,7 @@ import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import model.AuthData;
 import model.GameData;
+import java.util.ArrayList;
 
 public class GameService {
     private final GameDAO gameDAO;
@@ -32,4 +33,13 @@ public class GameService {
         return new CreateGameResult(gameID);
     }
 
+    public ListGamesResult listGames(String authToken) throws DataAccessException, UnauthorizedException {
+        checkToken(authToken);
+        ArrayList<GameSummary> games = new ArrayList<>();
+        for (GameData gameData : gameDAO.listGames()) {
+            games.add(new GameSummary(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName()));
+        }
+
+        return new ListGamesResult(games);
+    }
 }
