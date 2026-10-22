@@ -61,9 +61,10 @@ public class ChessPiece {
 
             ChessMove moveK = new ChessMove(myPosition, newPosition, PieceType.KNIGHT);
             moves.add(moveK);
+        } else {
+            ChessMove move = new ChessMove(myPosition, newPosition, null);
+            moves.add(move);
         }
-        else {ChessMove move = new ChessMove(myPosition, newPosition, null);
-            moves.add(move);}
     }
 
     private static boolean isOnBoard(int row, int col) {
@@ -194,14 +195,13 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-
-        int row = myPosition.getRow();
-        int col = myPosition.getColumn();
-
         Collection<ChessMove> moves = new ArrayList<>();
 
         switch (type) { //cases for each piece
-            case PAWN: {addPawnMoves(board, myPosition, moves); break;}
+            case PAWN: {
+                addPawnMoves(board, myPosition, moves);
+                break;
+            }
 
             case ROOK: {
 
