@@ -82,6 +82,7 @@ public class GameServiceTest {
         CreateGameResult gameResult = gameService.createGame(authResult1.authToken(), new CreateGameRequest("game1"));
         gameService.joinGame(authResult1.authToken(), new JoinGameRequest("WHITE", gameResult.gameID()));
 
-        Assertions.assertThrows(AlreadyTakenException.class, () -> gameService.joinGame(authResult2.authToken(), new JoinGameRequest("WHITE", gameResult.gameID())));
+        Assertions.assertThrows(AlreadyTakenException.class, () ->
+                gameService.joinGame(authResult2.authToken(), new JoinGameRequest("WHITE", gameResult.gameID())));
     }
 }
