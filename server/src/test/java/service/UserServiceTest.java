@@ -29,6 +29,12 @@ public class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Register Bad Request")
+    public void registerBadRequest() throws Exception {
+        Assertions.assertThrows(BadRequestException.class, () -> userService.register(new RegisterRequest("Luke", null, "a@b.com")));
+    }
+
+    @Test
     @DisplayName("Login Success")
     public void loginPositive() throws Exception {
         userService.register(new RegisterRequest("Luke", "pwd", "a@b.com"));
