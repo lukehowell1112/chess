@@ -61,7 +61,8 @@ public class ChessPiece {
 
             ChessMove moveK = new ChessMove(myPosition, newPosition, PieceType.KNIGHT);
             moves.add(moveK);
-        } else {ChessMove move = new ChessMove(myPosition, newPosition, null);
+        }
+        else {ChessMove move = new ChessMove(myPosition, newPosition, null);
             moves.add(move);}
     }
 
