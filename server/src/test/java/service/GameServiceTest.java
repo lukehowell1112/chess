@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.*;
+import model.GameData;
 import org.junit.jupiter.api.*;
 
 public class GameServiceTest {
@@ -50,5 +51,30 @@ public class GameServiceTest {
     public void listGamesNegative() throws Exception {
         String authToken = "bad-token";
         Assertions.assertThrows(UnauthorizedException.class, () -> gameService.listGames(authToken));
+    }
+
+    @Test
+    @DisplayName("Join Game Success")
+    public void joinGamePositive() throws Exception {
+        RegisterResult authResult1 = userService.register(new RegisterRequest("Luke", "pwd", "a@b.com"));
+        RegisterResult authResult2 = userService.register(new RegisterRequest("Luke2", "pwd2", "a@b2.com"));
+        CreateGameResult gameResult = gameService.createGame(authResult1.authToken(), new CreateGameRequest("game1"));
+        gameService.joinGame(authResult1.authToken(), new JoinGameRequest("WHITE", gameResult.gameID()));
+        gameService.joinGame(authResult2.authToken(), new JoinGameRequest("BLACK", gameResult.gameID()));
+
+        GameData gameData = gameDAO.getGame(gameResult.gameID());
+        Assertions.assertEquals("Luke", gameData.whiteUsername());
+        Assertions.assertEquals("Luke2", gameData.blackUsername());
+    }
+
+    @Test
+    @DisplayName("Two Users Join Game As White")
+    public void joinGameNegative() throws Exception {
+        RegisterResult authResult1 = userService.register(new RegisterRequest("Luke", "pwd", "a@b.com"));
+        RegisterResult authResult2 = userService.register(new RegisterRequest("Luke2", "pwd2", "a@b2.com"));
+        CreateGameResult gameResult = gameService.createGame(authResult1.authToken(), new CreateGameRequest("game1"));
+        gameService.joinGame(authResult1.authToken(), new JoinGameRequest("WHITE", gameResult.gameID()));
+
+        Assertions.assertThrows(AlreadyTakenException.class, () -> gameService.joinGame(authResult2.authToken(), new JoinGameRequest("WHITE", gameResult.gameID())));
     }
 }
