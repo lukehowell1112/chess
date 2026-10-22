@@ -34,4 +34,21 @@ public class GameServiceTest {
         String authToken = "bad-token";
         Assertions.assertThrows(UnauthorizedException.class, () -> gameService.createGame(authToken, new CreateGameRequest("game1")));
     }
+
+    @Test
+    @DisplayName("List Games Success")
+    public void listGamesPositive() throws Exception {
+        RegisterResult authResult = userService.register(new RegisterRequest("Luke", "pwd", "a@b.com"));
+        gameService.createGame(authResult.authToken(), new CreateGameRequest("game1"));
+        gameService.createGame(authResult.authToken(), new CreateGameRequest("game2"));
+        ListGamesResult listResult = gameService.listGames(authResult.authToken());
+        Assertions.assertEquals(2, listResult.games().size());
+    }
+
+    @Test
+    @DisplayName("List Games Bad Auth Token")
+    public void listGamesNegative() throws Exception {
+        String authToken = "bad-token";
+        Assertions.assertThrows(UnauthorizedException.class, () -> gameService.listGames(authToken));
+    }
 }
