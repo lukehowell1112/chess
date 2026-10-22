@@ -27,4 +27,26 @@ public class UserServiceTest {
         userService.register(request);
         Assertions.assertThrows(AlreadyTakenException.class, () -> userService.register(request));
     }
+
+    @Test
+    @DisplayName("Login Success")
+    public void loginPositive() throws Exception {
+        userService.register(new RegisterRequest("Luke", "pwd", "a@b.com"));
+
+        LoginRequest request = new LoginRequest("Luke", "pwd");
+        LoginResult result = userService.login(request);
+        Assertions.assertEquals("Luke", result.username());
+        Assertions.assertNotNull(result.authToken());
+    }
+
+    @Test
+    @DisplayName("Login Wrong Password")
+    public void loginNegative() throws Exception {
+        userService.register(new RegisterRequest("Luke", "pwd", "a@b.com"));
+
+        LoginRequest request = new LoginRequest("Luke", "123");
+        Assertions.assertThrows(UnauthorizedException.class, () -> userService.login(request));
+    }
+
+    
 }
