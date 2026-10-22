@@ -18,10 +18,11 @@ public class GameService {
     }
 
     private AuthData checkToken(String authToken) throws DataAccessException, UnauthorizedException {
-        if (authDAO.getAuth(authToken) == null) {
+        AuthData auth = authDAO.getAuth(authToken);
+        if (auth == null) {
             throw new UnauthorizedException("Error: unauthorized");
         }
-        return authDAO.getAuth(authToken);
+        return auth;
     }
 
     public CreateGameResult createGame(String authToken, CreateGameRequest request) throws DataAccessException, UnauthorizedException, BadRequestException {

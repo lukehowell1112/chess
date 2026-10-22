@@ -41,7 +41,6 @@ public class GameServiceTest {
     public void createGameBadRequest() throws Exception {
         RegisterResult result = userService.register(new RegisterRequest("Luke", "pwd", "a@b.com"));
         Assertions.assertThrows(BadRequestException.class, () -> gameService.createGame(result.authToken(), new CreateGameRequest(null)));
-
     }
 
     @Test

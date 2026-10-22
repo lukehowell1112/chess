@@ -201,7 +201,6 @@ public class ChessGame {
                         return false;
                     }
                 }
-
             }
         }
         return true;
@@ -230,7 +229,6 @@ public class ChessGame {
                         return false;
                     }
                 }
-
             }
         }
         return true;
