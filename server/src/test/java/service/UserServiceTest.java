@@ -48,5 +48,18 @@ public class UserServiceTest {
         Assertions.assertThrows(UnauthorizedException.class, () -> userService.login(request));
     }
 
-    
+    @Test
+    @DisplayName("Logout Success")
+    public void logoutPositive() throws Exception {
+        RegisterResult result = userService.register(new RegisterRequest("Luke", "pwd", "a@b.com"));
+        userService.logout(result.authToken());
+        Assertions.assertThrows(UnauthorizedException.class, () -> userService.logout(result.authToken()));
+    }
+
+    @Test
+    @DisplayName("Logout Nonexistent Token")
+    public void logoutNegative() throws Exception {
+        String authToken = "bad-token";
+        Assertions.assertThrows(UnauthorizedException.class, () -> userService.logout(authToken));
+    }
 }
