@@ -130,6 +130,61 @@ public class ChessPiece {
         }
     }
 
+    private void addPawnMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves) {
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        int direction;
+        int startingRow;
+        int promotionRow;
+        if (this.pieceColor == ChessGame.TeamColor.WHITE) {
+            direction = 1;
+            startingRow = 2;
+            promotionRow = 8;
+        } else {
+            direction = -1;
+            startingRow = 7;
+            promotionRow = 1;
+        }
+
+        int newRow = row + direction;
+        int newCol = col;
+
+        if (isOnBoard(newRow, newCol)) {
+            ChessPosition newPosition = new ChessPosition(newRow, newCol);
+            ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
+
+            if (pieceAtNewPosition == null) {
+                addPawnMove(myPosition, newPosition, newRow == promotionRow, moves);
+
+                //initial double
+                if (row == startingRow) {
+
+                    int newRowPlusTwo = row + (direction * 2);
+                    ChessPosition twoForward = new ChessPosition(newRowPlusTwo, col);
+                    ChessPiece pieceAtTwoForward = board.getPiece(twoForward);
+
+                    if (pieceAtTwoForward == null) {
+                        ChessMove move = new ChessMove(myPosition, twoForward, null);
+                        moves.add(move);
+                    }
+                }
+            }
+        }
+
+        //diagonal capture
+        int[] captureSides = {-1, 1};  // left, right
+        for (int captureSide : captureSides) {
+            int captureCol = col + captureSide;
+            if (isOnBoard(newRow, captureCol)) {
+                ChessPosition capturePosition = new ChessPosition(newRow, captureCol);
+                ChessPiece pieceAtCapture = board.getPiece(capturePosition);
+                if (pieceAtCapture != null && pieceAtCapture.getTeamColor() != this.pieceColor) {
+                    addPawnMove(myPosition, capturePosition, newRow == promotionRow, moves);
+                }
+            }
+        }
+    }
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -145,60 +200,7 @@ public class ChessPiece {
         Collection<ChessMove> moves = new ArrayList<>();
 
         switch (type) { //cases for each piece
-            case PAWN: {
-                // logic to move forward, diagonal capture, initial double move
-                int direction;
-                int startingRow;
-                int promotionRow;
-                if (this.pieceColor == ChessGame.TeamColor.WHITE) {
-                    direction = 1;
-                    startingRow = 2;
-                    promotionRow = 8;
-                } else {
-                    direction = -1;
-                    startingRow = 7;
-                    promotionRow = 1;
-                }
-
-                int newRow = row + direction;
-                int newCol = col;
-
-                if (isOnBoard(newRow, newCol)) {
-                    ChessPosition newPosition = new ChessPosition(newRow, newCol);
-                    ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
-
-                    if (pieceAtNewPosition == null) {
-                        addPawnMove(myPosition, newPosition, newRow == promotionRow, moves);
-
-                        //initial double
-                        if (row == startingRow) {
-
-                            int newRowPlusTwo = row + (direction * 2);
-                            ChessPosition twoForward = new ChessPosition(newRowPlusTwo, col);
-                            ChessPiece pieceAtTwoForward = board.getPiece(twoForward);
-
-                            if (pieceAtTwoForward == null) {
-                                ChessMove move = new ChessMove(myPosition, twoForward, null);
-                                moves.add(move);
-                            }
-                        }
-                    }
-                }
-
-                //diagonal capture
-                int[] captureSides = {-1, 1};  // left, right
-                for (int captureSide : captureSides) {
-                    int captureCol = col + captureSide;
-                    if (isOnBoard(newRow, captureCol)) {
-                        ChessPosition capturePosition = new ChessPosition(newRow, captureCol);
-                        ChessPiece pieceAtCapture = board.getPiece(capturePosition);
-                        if (pieceAtCapture != null && pieceAtCapture.getTeamColor() != this.pieceColor) {
-                            addPawnMove(myPosition, capturePosition, newRow == promotionRow, moves);
-                        }
-                    }
-                }
-                break;
-            }
+            case PAWN: {addPawnMoves(board, myPosition, moves); break;}
 
             case ROOK: {
 
