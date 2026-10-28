@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.*;
+import dataaccess.sql.DatabaseSetup;
 import io.javalin.*;
 import service.*;
 
@@ -20,6 +21,11 @@ public class Server {
     private final Javalin javalin;
 
     public Server() {
+        try {
+            DatabaseSetup.createTables();
+        } catch (DataAccessException ex) {
+            throw new RuntimeException(ex);
+        }
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
         javalin.put("/game", ctx -> {
