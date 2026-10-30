@@ -68,4 +68,22 @@ public class SqlGameDAOTest {
         Collection<GameData> games = gameDAO.listGames();
         Assertions.assertTrue(games.isEmpty());
     }
+
+    @Test
+    @DisplayName("Update Game Success")
+    public void updateGamePositive() throws DataAccessException {
+        int gameID1 = gameDAO.createGame("game1");
+        GameData data1 = gameDAO.getGame(gameID1);
+        GameData updated1 = new GameData(gameID1, "Luke", null, data1.gameName(), data1.game());
+        gameDAO.updateGame(updated1);
+        GameData updatedData1 = gameDAO.getGame(gameID1);
+        Assertions.assertEquals("Luke", updatedData1.whiteUsername());
+    }
+
+    @Test
+    @DisplayName("Update Nonexistent Game")
+    public void updateGameNegative() throws DataAccessException {
+        GameData missing = new GameData(99999, null, null, "ghost", new ChessGame());
+        Assertions.assertThrows(DataAccessException.class, () -> gameDAO.updateGame(missing));
+    }
 }
