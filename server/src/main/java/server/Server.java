@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.*;
 import dataaccess.sql.DatabaseSetup;
+import dataaccess.sql.*;
 import io.javalin.*;
 import service.*;
 
@@ -10,9 +11,9 @@ import io.javalin.http.Context;
 import java.util.Map;
 
 public class Server {
-    private final UserDAO userDAO = new MemoryUserDAO();
-    private final AuthDAO authDAO = new MemoryAuthDAO();
-    private final GameDAO gameDAO = new MemoryGameDAO();
+    private final UserDAO userDAO = new SqlUserDAO();
+    private final AuthDAO authDAO = new SqlAuthDAO();
+    private final GameDAO gameDAO = new SqlGameDAO();
 
     private final ClearService clearService = new ClearService(userDAO, authDAO, gameDAO);
     private final UserService userService = new UserService(userDAO, authDAO);
