@@ -1,6 +1,7 @@
 package dataaccess;
 
 import dataaccess.sql.DatabaseSetup;
+import dataaccess.sql.SqlAuthDAO;
 import dataaccess.sql.SqlUserDAO;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
@@ -15,6 +16,7 @@ public class SqlUserDAOTest {
     public void setUp() throws DataAccessException {
         DatabaseSetup.createTables();
         userDAO = new SqlUserDAO();
+        new SqlAuthDAO().clear();
         userDAO.clear();
     }
 
