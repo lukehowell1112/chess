@@ -78,4 +78,8 @@ public class ServerFacade {
     public AuthData login(String username, String password) throws ResponseException {
         return makeRequest("POST", "/session", new LoginRequest(username, password), null, AuthData.class);
     }
+
+    public void logout(String authToken) throws ResponseException {
+        makeRequest("DELETE", "/session", null, authToken, null);
+    }
 }
