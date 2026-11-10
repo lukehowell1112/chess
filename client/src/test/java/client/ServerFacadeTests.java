@@ -39,4 +39,12 @@ public class ServerFacadeTests {
         Assertions.assertTrue(authData.authToken().length() > 10);
     }
 
+    @Test
+    void registerNegative() throws Exception {
+        facade.register("player1", "password", "p1@email.com");
+        var ex = Assertions.assertThrows(ResponseException.class,
+                () -> facade.register("player1", "password", "p1@email.com"));
+        Assertions.assertEquals(403, ex.getStatusCode());
+    }
+
 }
