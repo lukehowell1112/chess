@@ -64,6 +64,8 @@ public class ServerFacade {
         return gson.fromJson(response.body(), responseClass);
     }
 
+    private record LoginRequest(String username, String password) {}
+
     public AuthData register(String username, String password, String email) throws ResponseException {
         UserData userData = new UserData(username, password, email);
         return makeRequest("POST", "/user", userData, null, AuthData.class);
@@ -71,5 +73,9 @@ public class ServerFacade {
 
     public void clear() throws ResponseException {
         makeRequest("DELETE", "/db", null, null, null);
+    }
+
+    public AuthData login(String username, String password) throws ResponseException {
+        return makeRequest("POST", "/session", new LoginRequest(username, password), null, AuthData.class);
     }
 }
