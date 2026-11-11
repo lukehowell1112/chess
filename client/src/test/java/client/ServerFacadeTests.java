@@ -114,4 +114,24 @@ public class ServerFacadeTests {
                 () -> facade.listGames("fake_token"));
         Assertions.assertEquals(401, ex.getStatusCode());
     }
+
+    @Test
+    void joinGamePositive() throws Exception {
+        var authData = facade.register("player1", "password", "p1@email.com");
+        int gameID = facade.createGame(authData.authToken(), "game1");
+        facade.joinGame(authData.authToken(), "WHITE", gameID);
+        List<GameSummary> games = facade.listGames(authData.authToken());
+        Assertions.assertEquals("player1", games.get(0).whiteUsername());
+    }
+
+    @Test
+    void joinGameNegative() throws Exception {
+        var authData1 = facade.register("player1", "password", "p1@email.com");
+        var authData2 = facade.register("player2", "password", "p1@email.com");
+        int gameID = facade.createGame(authData1.authToken(), "game1");
+        facade.joinGame(authData1.authToken(), "WHITE", gameID);
+        var ex = Assertions.assertThrows(ResponseException.class,
+                () -> facade.joinGame(authData2.authToken(), "WHITE", gameID));
+        Assertions.assertEquals(403, ex.getStatusCode());
+    }
 }

@@ -73,6 +73,8 @@ public class ServerFacade {
 
     private record ListGamesReply(List<GameSummary> games) {}
 
+    private record JoinGameRequest(String playerColor, int gameID) {}
+
     public AuthData register(String username, String password, String email) throws ResponseException {
         UserData userData = new UserData(username, password, email);
         return makeRequest("POST", "/user", userData, null, AuthData.class);
@@ -98,5 +100,9 @@ public class ServerFacade {
     public List<GameSummary> listGames(String authToken) throws ResponseException {
         ListGamesReply reply = makeRequest("GET", "/game", null, authToken, ListGamesReply.class);
         return reply.games();
+    }
+
+    public void joinGame(String authToken, String playerColor, int gameID) throws ResponseException {
+        makeRequest("PUT", "/game", new JoinGameRequest(playerColor, gameID), authToken, null);
     }
 }
