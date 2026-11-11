@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class REPL {
 
     public void repl() {
+        InputHandler current
         Scanner scanner = new Scanner(System.in);
         String line = "";
         while (!line.equals("quit")) {
