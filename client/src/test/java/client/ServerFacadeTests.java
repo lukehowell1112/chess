@@ -80,4 +80,18 @@ public class ServerFacadeTests {
                 () -> facade.logout("fake-token"));
         Assertions.assertEquals(401, ex.getStatusCode());
     }
+
+    @Test
+    void createGamePositive() throws Exception {
+        var authData = facade.register("player1", "password", "p1@email.com");
+        int gameID = facade.createGame(authData.authToken(), "game1");
+        Assertions.assertTrue(gameID > 0);
+    }
+
+    @Test
+    void createGameNegative() throws Exception {
+        var ex = Assertions.assertThrows(ResponseException.class,
+                () -> facade.createGame("fake-token", "game1"));
+        Assertions.assertEquals(401, ex.getStatusCode());
+    }
 }

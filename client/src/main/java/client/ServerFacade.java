@@ -66,6 +66,10 @@ public class ServerFacade {
 
     private record LoginRequest(String username, String password) {}
 
+    private record CreateGameRequest(String gameName) {}
+
+    private record CreateGameReply(int gameID) {}
+
     public AuthData register(String username, String password, String email) throws ResponseException {
         UserData userData = new UserData(username, password, email);
         return makeRequest("POST", "/user", userData, null, AuthData.class);
@@ -81,5 +85,10 @@ public class ServerFacade {
 
     public void logout(String authToken) throws ResponseException {
         makeRequest("DELETE", "/session", null, authToken, null);
+    }
+
+    public int createGame(String authToken, String gameName) throws ResponseException {
+        CreateGameReply reply = makeRequest("POST", "/game", new CreateGameRequest(gameName), authToken, CreateGameReply.class);
+        return reply.gameID();
     }
 }
