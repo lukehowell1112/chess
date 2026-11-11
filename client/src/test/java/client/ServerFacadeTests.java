@@ -3,6 +3,8 @@ package client;
 import org.junit.jupiter.api.*;
 import server.Server;
 
+import java.util.List;
+
 
 public class ServerFacadeTests {
 
@@ -92,6 +94,24 @@ public class ServerFacadeTests {
     void createGameNegative() throws Exception {
         var ex = Assertions.assertThrows(ResponseException.class,
                 () -> facade.createGame("fake-token", "game1"));
+        Assertions.assertEquals(401, ex.getStatusCode());
+    }
+
+    @Test
+    void listGamesPositive() throws Exception {
+        var authData = facade.register("player1", "password", "p1@email.com");
+        facade.createGame(authData.authToken(), "game1");
+        facade.createGame(authData.authToken(), "game2");
+        List<GameSummary> games = facade.listGames(authData.authToken());
+        Assertions.assertEquals(2, games.size());
+        Assertions.assertEquals("game1", games.get(0).gameName());
+        Assertions.assertEquals("game2", games.get(1).gameName());
+    }
+
+    @Test
+    void listGamesNegative() throws Exception {
+        var ex = Assertions.assertThrows(ResponseException.class,
+                () -> facade.listGames("fake_token"));
         Assertions.assertEquals(401, ex.getStatusCode());
     }
 }

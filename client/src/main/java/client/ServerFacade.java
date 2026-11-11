@@ -10,6 +10,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 
 public class ServerFacade {
     private final String serverUrl;
@@ -70,6 +71,8 @@ public class ServerFacade {
 
     private record CreateGameReply(int gameID) {}
 
+    private record ListGamesReply(List<GameSummary> games) {}
+
     public AuthData register(String username, String password, String email) throws ResponseException {
         UserData userData = new UserData(username, password, email);
         return makeRequest("POST", "/user", userData, null, AuthData.class);
@@ -90,5 +93,10 @@ public class ServerFacade {
     public int createGame(String authToken, String gameName) throws ResponseException {
         CreateGameReply reply = makeRequest("POST", "/game", new CreateGameRequest(gameName), authToken, CreateGameReply.class);
         return reply.gameID();
+    }
+
+    public List<GameSummary> listGames(String authToken) throws ResponseException {
+        ListGamesReply reply = makeRequest("GET", "/game", null, authToken, ListGamesReply.class);
+        return reply.games();
     }
 }
