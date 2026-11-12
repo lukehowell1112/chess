@@ -29,8 +29,7 @@ public class PreLogin implements InputHandler {
                     register <username> <password> <email> - to create an account
                     login <username> <password>
                     quit
-                    help
-                    """;
+                    help""";
             return new ResultType(menu, false, false);
         } else if (command.equals("quit")) {
             if (words.length != 1) {
