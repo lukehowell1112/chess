@@ -108,7 +108,23 @@ public class PostLogin implements InputHandler {
                 return new ResultType("Unable to join game: " + e.getMessage(), false, false);
             }
         } else if (command.equals("observe")) {
-            return new ResultType("not yet implemented", false, false);
+            if (words.length != 2) {
+                return new ResultType("Usage: observe <game number>", false, false);
+            }
+            int gameNumber;
+            try {
+                gameNumber = Integer.parseInt(words[1]);
+            } catch (NumberFormatException e) {
+                return new ResultType("Game number must be an integer", false, false);
+            }
+            if (games.isEmpty()) {
+                return new ResultType("Run list first to see the available games", false, false);
+            }
+            if (gameNumber > games.size() || gameNumber < 1) {
+                return new ResultType("Pick a game number from the list", false, false);
+            }
+            GameSummary game = games.get(gameNumber - 1);
+            return new ResultType("Observing: " + game.gameName(), false, false);
         }
         return new ResultType("Unknown command, type 'help'", false, false);
     }
