@@ -4,11 +4,13 @@ import client.GameSummary;
 import client.ResponseException;
 import client.ServerFacade;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostLogin implements InputHandler {
     private final ServerFacade facade;
     private final String authToken;
+    private List<GameSummary> games = new ArrayList<>();
 
     public PostLogin(ServerFacade facade, String authToken) {
         this.facade = facade;
@@ -57,13 +59,13 @@ public class PostLogin implements InputHandler {
                 return new ResultType("Usage: list", false, false);
             }
             try {
-                List<GameSummary> gameList = facade.listGames(authToken);
-                if (gameList.isEmpty()) {
+                games = facade.listGames(authToken);
+                if (games.isEmpty()) {
                     return new ResultType("No games yet", false, false);
                 }
                 int index = 0;
                 StringBuilder text = new StringBuilder();
-                for (GameSummary game : gameList) {
+                for (GameSummary game : games) {
                     int gameNumber = index + 1;
                     text.append(gameNumber).append(". ")
                             .append(game.gameName()).append(" ")
@@ -79,7 +81,32 @@ public class PostLogin implements InputHandler {
                 return new ResultType("Could not list games: " + e.getMessage(), false, false);
             }
         } else if (command.equals("play")) {
-            return new ResultType("not yet implemented", false, false);
+            if (words.length != 3) {
+                return new ResultType("Usage: play <game number> <white|black>", false, false);
+            }
+            int gameNumber;
+            try {
+                gameNumber = Integer.parseInt(words[1]);
+            } catch (NumberFormatException e) {
+                return new ResultType("Game number must be an integer", false, false);
+            }
+            if (games.isEmpty()) {
+                return new ResultType("Run list first to see the available games", false, false);
+            }
+            if (gameNumber > games.size() || gameNumber < 1) {
+                return new ResultType("Pick a game number from the list", false, false);
+            }
+            String color = words[2].toLowerCase();
+            if (!color.equals("black") && !color.equals("white")) {
+                return new ResultType("Usage: play <game number> <white|black>", false, false);
+            }
+            try {
+                GameSummary game = games.get(gameNumber - 1);
+                facade.joinGame(authToken, color.toUpperCase(), game.gameID());
+                return new ResultType("Joined game: " + game.gameName(), false, false);
+            } catch (ResponseException e) {
+                return new ResultType("Unable to join game: " + e.getMessage(), false, false);
+            }
         } else if (command.equals("observe")) {
             return new ResultType("not yet implemented", false, false);
         }
