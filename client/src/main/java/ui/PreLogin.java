@@ -20,7 +20,7 @@ public class PreLogin implements InputHandler {
     public ResultType eval(String input) {
         String[] words = input.split("\\s+");
         if (words.length == 0) {
-            return null;
+            return new ResultType("Type help to see commands", false, false);
         }
         String command = words[0].toLowerCase();
 
