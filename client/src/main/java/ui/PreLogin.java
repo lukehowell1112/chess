@@ -6,7 +6,7 @@ import model.AuthData;
 
 public class PreLogin implements InputHandler {
     private final ServerFacade facade;
-    private final String authToken;
+    private String authToken;
 
     public PreLogin(ServerFacade facade) {
         this.facade = facade;

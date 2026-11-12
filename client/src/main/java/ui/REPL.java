@@ -19,11 +19,11 @@ public class REPL {
         Scanner scanner = new Scanner(System.in);
         String line = "";
         while (!line.equals("quit")) {
-            System.out.print(">");
+            System.out.print("> ");
             line = scanner.nextLine();
-            ResultType reply = current.eval(line);
-            System.out.println(reply);
-            if (reply.switchClient()) {swapClient(reply);}
+            ResultType result = current.eval(line);
+            System.out.println(result.reply());
+            if (result.switchClient()) {swapClient(result);}
         }
     }
 
