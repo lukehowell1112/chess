@@ -1,7 +1,9 @@
 package ui;
 
+import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
+import chess.ChessPosition;
 
 public class BoardDrawing {
 
@@ -47,5 +49,13 @@ public class BoardDrawing {
         return background + decidePiece(piece) + EscapeSequences.RESET_BG_COLOR;
     }
 
-    
+    private String buildRow(int row, ChessBoard board) {
+        StringBuilder line = new StringBuilder();
+        for (int col = 1; col <= 8; col++) {
+            ChessPiece piece = board.getPiece(new ChessPosition(row, col));
+            line.append(buildSquare(row, col, piece));
+        }
+        line.append("\n");
+        return line.toString();
+    }
 }
