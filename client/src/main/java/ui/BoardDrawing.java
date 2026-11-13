@@ -60,4 +60,22 @@ public class BoardDrawing {
         line.append("\n");
         return line.toString();
     }
+
+    private String border(boolean whiteView) {
+        if (whiteView) {
+            return "     a  b  c  d  e  f  g  h\n";
+        }
+        return "     h  g  f  e  d  c  b  a\n";
+    }
+
+    public String drawBoard(ChessBoard board, boolean whiteView) {
+        StringBuilder text = new StringBuilder();
+        text.append(border(whiteView));
+        for (int i = 1; i <= 8; i++) {
+            int row = whiteView ? 9 - i : i;
+            text.append(buildRow(row, board, whiteView));
+        }
+        text.append(border(whiteView));
+        return text.toString();
+    }
 }
