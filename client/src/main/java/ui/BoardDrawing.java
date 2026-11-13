@@ -33,10 +33,13 @@ public class BoardDrawing {
         if (piece == null) {
             return EscapeSequences.EMPTY;
         }
+        String pieceColor;
         if (piece.getTeamColor().equals(ChessGame.TeamColor.WHITE)) {
-            return whiteChar(piece.getPieceType());
+            pieceColor = EscapeSequences.SET_TEXT_COLOR_RED;
+            return pieceColor + whiteChar(piece.getPieceType()) + EscapeSequences.RESET_TEXT_COLOR;
         }
-        return blackChar(piece.getPieceType());
+        pieceColor = EscapeSequences.SET_TEXT_COLOR_GREEN;
+        return pieceColor + blackChar(piece.getPieceType()) + EscapeSequences.RESET_TEXT_COLOR;
     }
 
     private String buildSquare(int row, int col, ChessPiece piece) {
@@ -57,15 +60,16 @@ public class BoardDrawing {
             ChessPiece piece = board.getPiece(new ChessPosition(row, actualCol));
             line.append(buildSquare(row, actualCol, piece));
         }
+        line.append(" ").append(row).append(" ");
         line.append("\n");
         return line.toString();
     }
 
     private String border(boolean whiteView) {
         if (whiteView) {
-            return "     a  b  c  d  e  f  g  h\n";
+            return "    a  b  c  d  e  f  g  h\n";
         }
-        return "     h  g  f  e  d  c  b  a\n";
+        return "    h  g  f  e  d  c  b  a\n";
     }
 
     public String drawBoard(ChessBoard board, boolean whiteView) {

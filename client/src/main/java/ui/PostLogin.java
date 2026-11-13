@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessBoard;
 import client.GameSummary;
 import client.ResponseException;
 import client.ServerFacade;
@@ -11,6 +12,7 @@ public class PostLogin implements InputHandler {
     private final ServerFacade facade;
     private final String authToken;
     private List<GameSummary> games = new ArrayList<>();
+    private final BoardDrawing drawing = new BoardDrawing();
 
     public PostLogin(ServerFacade facade, String authToken) {
         this.facade = facade;
@@ -124,7 +126,9 @@ public class PostLogin implements InputHandler {
                 return new ResultType("Pick a game number from the list", false, false);
             }
             GameSummary game = games.get(gameNumber - 1);
-            return new ResultType("Observing: " + game.gameName(), false, false);
+            ChessBoard board = new ChessBoard();
+            board.resetBoard();
+            return new ResultType("Observing: " + game.gameName() + "\n" + drawing.drawBoard(board, true), false, false);
         }
         return new ResultType("Unknown command, type 'help'", false, false);
     }
