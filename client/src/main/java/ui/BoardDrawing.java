@@ -49,11 +49,13 @@ public class BoardDrawing {
         return background + decidePiece(piece) + EscapeSequences.RESET_BG_COLOR;
     }
 
-    private String buildRow(int row, ChessBoard board) {
+    private String buildRow(int row, ChessBoard board, boolean whiteView) {
         StringBuilder line = new StringBuilder();
+        line.append(" ").append(row).append(" ");
         for (int col = 1; col <= 8; col++) {
-            ChessPiece piece = board.getPiece(new ChessPosition(row, col));
-            line.append(buildSquare(row, col, piece));
+            int actualCol = whiteView ? col : 9 - col;
+            ChessPiece piece = board.getPiece(new ChessPosition(row, actualCol));
+            line.append(buildSquare(row, actualCol, piece));
         }
         line.append("\n");
         return line.toString();
