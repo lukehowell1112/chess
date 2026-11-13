@@ -42,9 +42,12 @@ public class PostLogin implements InputHandler {
             }
             try {
                 facade.logout(authToken);
-                return new ResultType("Thanks for playing!", true, false);
+                return new ResultType("Logged out: Thanks for playing!", true, false);
             } catch (ResponseException e) {
-                return new ResultType("Could not logout: " + e.getMessage(), false, false);
+                if (e.getStatusCode() == 401) {
+                    return new ResultType("Invalid session: please log out and log in again", false, false);
+                }
+                return new ResultType("Logged out: Thanks for playing!", true, false);
             }
         } else if (command.equals("create")) {
             if (words.length != 2) {
@@ -54,6 +57,9 @@ public class PostLogin implements InputHandler {
                 facade.createGame(authToken, words[1]);
                 return new ResultType("Created game: " + words[1], false, false);
             } catch (ResponseException e) {
+                if (e.getStatusCode() == 401) {
+                    return new ResultType("Invalid session: please log out and log in again", false, false);
+                }
                 return new ResultType("Could not create game: " + e.getMessage(), false, false);
             }
         } else if (command.equals("list")) {
@@ -80,6 +86,9 @@ public class PostLogin implements InputHandler {
                 String result = text.toString();
                 return new ResultType(result, false, false);
             } catch (ResponseException e) {
+                if (e.getStatusCode() == 401) {
+                    return new ResultType("Invalid session: please log out and log in again", false, false);
+                }
                 return new ResultType("Could not list games: " + e.getMessage(), false, false);
             }
         } else if (command.equals("play")) {
@@ -109,7 +118,13 @@ public class PostLogin implements InputHandler {
                 board.resetBoard();
                 return new ResultType("Joined game: " + game.gameName() + "\n" + drawing.drawBoard(board, color.equals("white")), false, false);
             } catch (ResponseException e) {
-                return new ResultType("Unable to join game: " + e.getMessage(), false, false);
+                if (e.getStatusCode() == 403) {
+                    return new ResultType("Unable to join game: that color is taken, please try again", false, false);
+                } else if (e.getStatusCode() == 401) {
+                    return new ResultType("Invalid session: please log out and log in again", false, false);
+                } else {
+                    return new ResultType("Unable to join game: " + e.getMessage(), false, false);
+                }
             }
         } else if (command.equals("observe")) {
             if (words.length != 2) {

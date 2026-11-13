@@ -27,9 +27,9 @@ public class PreLogin implements InputHandler {
         if (command.equals("help")) {
             String menu = """
                     register <username> <password> <email> - to create an account
-                    login <username> <password>
-                    quit
-                    help""";
+                    login <username> <password> - to log in with an existing account
+                    quit - to quit the program
+                    help - to list all commands""";
             return new ResultType(menu, false, false);
         } else if (command.equals("quit")) {
             if (words.length != 1) {
@@ -45,6 +45,9 @@ public class PreLogin implements InputHandler {
                 authToken = authData.authToken();
                 return new ResultType("Registered and logged in as " + words[1], true, false);
             } catch (ResponseException e) {
+                if (e.getStatusCode() == 403) {
+                    return new ResultType("Could not register: username is taken, please try again", false, false);
+                }
                 return new ResultType("Could not register: " + e.getMessage(), false, false);
             }
         } else if (command.equals("login")) {
@@ -56,7 +59,11 @@ public class PreLogin implements InputHandler {
                 authToken = authData.authToken();
                 return new ResultType("Logged in as " + words[1], true, false);
             } catch (ResponseException e) {
-                return new ResultType("Could not login: " + e.getMessage(), false, false);
+                if (e.getStatusCode() == 401) {
+                    return new ResultType("Could not log in: username or password is incorrect, please try again", false, false);
+
+                }
+                return new ResultType("Could not log in: " + e.getMessage(), false, false);
             }
         }
         return new ResultType("Unknown command, type 'help'", false, false);
