@@ -105,7 +105,9 @@ public class PostLogin implements InputHandler {
             try {
                 GameSummary game = games.get(gameNumber - 1);
                 facade.joinGame(authToken, color.toUpperCase(), game.gameID());
-                return new ResultType("Joined game: " + game.gameName(), false, false);
+                ChessBoard board = new ChessBoard();
+                board.resetBoard();
+                return new ResultType("Joined game: " + game.gameName() + "\n" + drawing.drawBoard(board, color.equals("white")), false, false);
             } catch (ResponseException e) {
                 return new ResultType("Unable to join game: " + e.getMessage(), false, false);
             }
