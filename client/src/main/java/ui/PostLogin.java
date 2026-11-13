@@ -19,6 +19,65 @@ public class PostLogin implements InputHandler {
         this.authToken = authToken;
     }
 
+    private ResultType play(String[] words) {
+        if (words.length != 3) {
+            return new ResultType("Usage: play <game number> <white|black>", false, false);
+        }
+        int gameNumber;
+        try {
+            gameNumber = Integer.parseInt(words[1]);
+        } catch (NumberFormatException e) {
+            return new ResultType("Game number must be an integer", false, false);
+        }
+        if (games.isEmpty()) {
+            return new ResultType("Run list first to see the available games", false, false);
+        }
+        if (gameNumber > games.size() || gameNumber < 1) {
+            return new ResultType("Pick a game number from the list", false, false);
+        }
+        String color = words[2].toLowerCase();
+        if (!color.equals("black") && !color.equals("white")) {
+            return new ResultType("Color must be white or black", false, false);
+        }
+        try {
+            GameSummary game = games.get(gameNumber - 1);
+            facade.joinGame(authToken, color.toUpperCase(), game.gameID());
+            ChessBoard board = new ChessBoard();
+            board.resetBoard();
+            return new ResultType("Joined game: " + game.gameName() + "\n" + drawing.drawBoard(board, color.equals("white")), false, false);
+        } catch (ResponseException e) {
+            if (e.getStatusCode() == 403) {
+                return new ResultType("Unable to join game: that color is taken, please try again", false, false);
+            } else if (e.getStatusCode() == 401) {
+                return new ResultType("Invalid session: please log out and log in again", false, false);
+            } else {
+                return new ResultType("Unable to join game: " + e.getMessage(), false, false);
+            }
+        }
+    }
+
+    private ResultType observe(String[] words) {
+        if (words.length != 2) {
+            return new ResultType("Usage: observe <game number>", false, false);
+        }
+        int gameNumber;
+        try {
+            gameNumber = Integer.parseInt(words[1]);
+        } catch (NumberFormatException e) {
+            return new ResultType("Game number must be an integer", false, false);
+        }
+        if (games.isEmpty()) {
+            return new ResultType("Run list first to see the available games", false, false);
+        }
+        if (gameNumber > games.size() || gameNumber < 1) {
+            return new ResultType("Pick a game number from the list", false, false);
+        }
+        GameSummary game = games.get(gameNumber - 1);
+        ChessBoard board = new ChessBoard();
+        board.resetBoard();
+        return new ResultType("Observing: " + game.gameName() + "\n" + drawing.drawBoard(board, true), false, false);
+    }
+
     @Override
     public ResultType eval(String input) {
         String[] words = input.trim().split("\\s+");
@@ -92,60 +151,9 @@ public class PostLogin implements InputHandler {
                 return new ResultType("Could not list games: " + e.getMessage(), false, false);
             }
         } else if (command.equals("play")) {
-            if (words.length != 3) {
-                return new ResultType("Usage: play <game number> <white|black>", false, false);
-            }
-            int gameNumber;
-            try {
-                gameNumber = Integer.parseInt(words[1]);
-            } catch (NumberFormatException e) {
-                return new ResultType("Game number must be an integer", false, false);
-            }
-            if (games.isEmpty()) {
-                return new ResultType("Run list first to see the available games", false, false);
-            }
-            if (gameNumber > games.size() || gameNumber < 1) {
-                return new ResultType("Pick a game number from the list", false, false);
-            }
-            String color = words[2].toLowerCase();
-            if (!color.equals("black") && !color.equals("white")) {
-                return new ResultType("Color must be white or black", false, false);
-            }
-            try {
-                GameSummary game = games.get(gameNumber - 1);
-                facade.joinGame(authToken, color.toUpperCase(), game.gameID());
-                ChessBoard board = new ChessBoard();
-                board.resetBoard();
-                return new ResultType("Joined game: " + game.gameName() + "\n" + drawing.drawBoard(board, color.equals("white")), false, false);
-            } catch (ResponseException e) {
-                if (e.getStatusCode() == 403) {
-                    return new ResultType("Unable to join game: that color is taken, please try again", false, false);
-                } else if (e.getStatusCode() == 401) {
-                    return new ResultType("Invalid session: please log out and log in again", false, false);
-                } else {
-                    return new ResultType("Unable to join game: " + e.getMessage(), false, false);
-                }
-            }
+            return play(words);
         } else if (command.equals("observe")) {
-            if (words.length != 2) {
-                return new ResultType("Usage: observe <game number>", false, false);
-            }
-            int gameNumber;
-            try {
-                gameNumber = Integer.parseInt(words[1]);
-            } catch (NumberFormatException e) {
-                return new ResultType("Game number must be an integer", false, false);
-            }
-            if (games.isEmpty()) {
-                return new ResultType("Run list first to see the available games", false, false);
-            }
-            if (gameNumber > games.size() || gameNumber < 1) {
-                return new ResultType("Pick a game number from the list", false, false);
-            }
-            GameSummary game = games.get(gameNumber - 1);
-            ChessBoard board = new ChessBoard();
-            board.resetBoard();
-            return new ResultType("Observing: " + game.gameName() + "\n" + drawing.drawBoard(board, true), false, false);
+            return observe(words);
         }
         return new ResultType("Unknown command, type 'help'", false, false);
     }
