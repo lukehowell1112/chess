@@ -18,7 +18,7 @@ public class PreLogin implements InputHandler {
 
     @Override
     public ResultType eval(String input) {
-        String[] words = input.split("\\s+");
+        String[] words = input.trim().split("\\s+");
         if (words.length == 0) {
             return new ResultType("Type help to see commands", false, false);
         }

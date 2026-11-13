@@ -21,7 +21,7 @@ public class PostLogin implements InputHandler {
 
     @Override
     public ResultType eval(String input) {
-        String[] words = input.split("\\s+");
+        String[] words = input.trim().split("\\s+");
         if (words.length == 0) {
             return new ResultType("Type help to see commands", false, false);
         }
@@ -31,7 +31,7 @@ public class PostLogin implements InputHandler {
             String menu = """
                     help - to list all commands
                     logout - to simply logout
-                    create <game name> - to create a game
+                    create <name> - to create a game
                     list - to list the games
                     play <game number> <white|black> - to play a game
                     observe <game number> - to spectate a chosen game""";
@@ -51,7 +51,7 @@ public class PostLogin implements InputHandler {
             }
         } else if (command.equals("create")) {
             if (words.length != 2) {
-                return new ResultType("Usage: create <game name>", false, false);
+                return new ResultType("Usage: create <name>", false, false);
             }
             try {
                 facade.createGame(authToken, words[1]);
@@ -109,7 +109,7 @@ public class PostLogin implements InputHandler {
             }
             String color = words[2].toLowerCase();
             if (!color.equals("black") && !color.equals("white")) {
-                return new ResultType("Usage: play <game number> <white|black>", false, false);
+                return new ResultType("Color must be white or black", false, false);
             }
             try {
                 GameSummary game = games.get(gameNumber - 1);
