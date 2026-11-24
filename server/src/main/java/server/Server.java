@@ -72,6 +72,12 @@ public class Server {
             ctx.result("{}");
         });
 
+        javalin.ws("/ws", ws -> {
+            ws.onConnect(ctx -> {ctx.session});
+            ws.onMessage(ctx -> {ctx.session});
+            ws.onClose(ctx -> {});
+        });
+
         javalin.exception(BadRequestException.class, (e, ctx) -> sendError(ctx, 400, e.getMessage()));
         javalin.exception(UnauthorizedException.class, (e, ctx) -> sendError(ctx, 401, e.getMessage()));
         javalin.exception(AlreadyTakenException.class, (e, ctx) -> sendError(ctx, 403, e.getMessage()));

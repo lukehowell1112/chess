@@ -61,7 +61,6 @@ public class PreLogin implements InputHandler {
             } catch (ResponseException e) {
                 if (e.getStatusCode() == 401) {
                     return new ResultType("Could not log in: username or password is incorrect, please try again", false, false);
-
                 }
                 return new ResultType("Could not log in: " + e.getMessage(), false, false);
             }
