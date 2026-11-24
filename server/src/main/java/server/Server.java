@@ -73,8 +73,8 @@ public class Server {
         });
 
         javalin.ws("/ws", ws -> {
-            ws.onConnect(ctx -> {ctx.session});
-            ws.onMessage(ctx -> {ctx.session});
+            ws.onConnect(ctx -> {});
+            ws.onMessage(ctx -> {});
             ws.onClose(ctx -> {});
         });
 

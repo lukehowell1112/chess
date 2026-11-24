@@ -23,13 +23,9 @@ public class ConnectionManager {
         }
     }
 
-    public void messageOne(Session session, ServerMessage message) {
+    public void messageOne(Session session, ServerMessage message) throws IOException {
         Gson gson = new Gson();
         String json = gson.toJson(message);
-        try {
-            session.getRemote().sendString(json);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        session.getRemote().sendString(json);
     }
 }
