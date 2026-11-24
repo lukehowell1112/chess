@@ -28,4 +28,32 @@ public class ConnectionManager {
         String json = gson.toJson(message);
         session.getRemote().sendString(json);
     }
+
+    public void messageAll(Integer gameID, ServerMessage message) {
+        Set<Session> game = sessionsByGame.get(gameID);
+        if (game != null) {
+            for (Session session : game) {
+                try {
+                    messageOne(session, message);
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+    }
+
+    public void messageAllButOne(Integer gameID, Session rootSession, ServerMessage message) {
+        Set<Session> game = sessionsByGame.get(gameID);
+        if (game != null) {
+            for (Session session : game) {
+                if (!rootSession.equals(session)) {
+                    try {
+                        messageOne(session, message);
+                    } catch (IOException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+            }
+        }
+    }
 }
