@@ -14,5 +14,5 @@ public class WebSocketHandler {
         this.connectionManager = connectionManager;
     }
 
-    
+
 }
