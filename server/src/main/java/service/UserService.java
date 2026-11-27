@@ -60,4 +60,13 @@ public class UserService {
 
         authDAO.deleteAuth(authToken);
     }
+
+    public AuthData checkAuth(String authToken) throws DataAccessException, UnauthorizedException {
+        AuthData authData = authDAO.getAuth(authToken);
+        if (authData == null) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+
+        return authData;
+    }
 }
