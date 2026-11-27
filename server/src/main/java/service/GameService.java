@@ -73,4 +73,13 @@ public class GameService {
         }
         gameDAO.updateGame(gameData);
     }
+
+    public GameData checkGame(int gameID) throws DataAccessException, BadRequestException {
+        GameData game = gameDAO.getGame(gameID);
+        if (game == null) {
+            throw new BadRequestException("Error: bad request");
+        }
+
+        return game;
+    }
 }
