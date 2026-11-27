@@ -61,21 +61,21 @@ public class WebSocketTests {
 
     @Test
     @Order(1)
-    @DisplayName("Connect 1 User")
+    @DisplayName("WebSocketHandler 1 User")
     public void connectSingleUser() {
         connectToGame(white, gameID, true, Set.of(), Set.of(), "white player connect");
     }
 
     @Test
     @Order(2)
-    @DisplayName("Normal Connect")
+    @DisplayName("Normal WebSocketHandler")
     public void connectGood() {
         setupNormalGame();    //Connects 3 Users to the game, and notifies others upon connection
     }
 
     @Test
     @Order(3)
-    @DisplayName("Connect Bad GameID")
+    @DisplayName("WebSocketHandler Bad GameID")
     public void connectBadGameID() {
         connectToGame(white, gameID + 1, false, Set.of(), Set.of(), "player connect with wrong id");
         connectToGame(observer, gameID + 1, false, Set.of(white), Set.of(), "observer connect with wrong id");
@@ -83,7 +83,7 @@ public class WebSocketTests {
 
     @Test
     @Order(3)
-    @DisplayName("Connect Bad AuthToken")
+    @DisplayName("WebSocketHandler Bad AuthToken")
     public void connectBadAuthToken() {
         connectToGame(new WebsocketUser("didn't register", "badAuth"), gameID, false, Set.of(), Set.of(), "connect with bad auth");
     }
