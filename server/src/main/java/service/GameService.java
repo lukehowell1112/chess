@@ -82,4 +82,8 @@ public class GameService {
 
         return game;
     }
+
+    public void saveGame(GameData gameData) throws DataAccessException {
+        gameDAO.updateGame(gameData);
+    }
 }
