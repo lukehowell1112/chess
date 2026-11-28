@@ -10,6 +10,7 @@ import service.*;
 import io.javalin.http.Context;
 import websocket.ConnectionManager;
 import websocket.WebSocketHandler;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
@@ -87,6 +88,7 @@ public class Server {
                 try {
                     switch (command.getCommandType()) {
                         case CONNECT -> handler.connect(command, ctx.session);
+                        case MAKE_MOVE -> handler.move(new Gson().fromJson(ctx.message(), MakeMoveCommand.class), ctx.session);
                     }
                 } catch (Exception e) {
                     manager.messageOne(ctx.session, ServerMessage.error(e.getMessage()));
