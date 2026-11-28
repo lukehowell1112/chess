@@ -8,6 +8,11 @@ import io.javalin.*;
 import service.*;
 
 import io.javalin.http.Context;
+import websocket.ConnectionManager;
+import websocket.WebSocketHandler;
+import websocket.commands.UserGameCommand;
+import websocket.messages.ServerMessage;
+
 import java.util.Map;
 
 public class Server {
@@ -72,9 +77,22 @@ public class Server {
             ctx.result("{}");
         });
 
+        ConnectionManager manager = new ConnectionManager();
+        WebSocketHandler handler = new WebSocketHandler(userService, gameService, manager);
         javalin.ws("/ws", ws -> {
             ws.onConnect(ctx -> {});
-            ws.onMessage(ctx -> {});
+            ws.onMessage(ctx -> {
+                String clientText = ctx.message();
+                UserGameCommand command = new Gson().fromJson(clientText, UserGameCommand.class);
+                try {
+                    switch (command.getCommandType()) {
+                        case CONNECT -> handler.connect(command, ctx.session);
+                    }
+                } catch (Exception e) {
+                    manager.messageOne(ctx.session, ServerMessage.error(e.getMessage()));
+                }
+
+            });
             ws.onClose(ctx -> {});
         });
 
